@@ -9,6 +9,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <depend>cv_bridge</depend>
+  <depend>geometry_msgs</depend>
   <depend>opencv</depend>
   <depend>prophesee_event_msgs</depend>
   <depend>roscpp</depend>

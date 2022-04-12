@@ -1,15 +1,8 @@
 #include <cv_bridge/cv_bridge.h>
 #include <mutex>
 #include <opencv2/opencv.hpp>
-#include <prophesee_event_msgs/Event.h>
-#include <prophesee_event_msgs/EventArray.h>
 #include <ros/ros.h>
-#include <sensor_msgs/Image.h>
 #include <utility.hpp>
-
-using Event      = prophesee_event_msgs::Event;
-using EventArray = prophesee_event_msgs::EventArray;
-using Image      = sensor_msgs::Image;
 
 std::mutex         mtx1, mtx2;
 std::vector<Event> event_buffer1, event_buffer2;
