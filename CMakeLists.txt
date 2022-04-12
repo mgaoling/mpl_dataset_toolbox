@@ -1,0 +1,34 @@
+cmake_minimum_required(VERSION 3.0.2)
+project(mpl_dataset_toolbox)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 -fopenmp")
+
+find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  prophesee_event_msgs
+  roscpp
+  rospy
+  sensor_msgs
+  std_msgs
+)
+
+find_package(OpenCV REQUIRED)
+
+catkin_package(
+  INCLUDE_DIRS include
+)
+
+include_directories(
+  include
+  ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
+)
+
+link_directories(
+  include
+  ${OpenCV_LIBRARY_DIRS}
+)
+
+add_executable(event_visualizer src/event_visualizer.cpp)
+
+target_link_libraries(event_visualizer ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
