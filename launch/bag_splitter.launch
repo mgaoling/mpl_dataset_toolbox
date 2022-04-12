@@ -1,0 +1,5 @@
+<launch>
+  <rosparam command="load" file="$(find mpl_dataset_toolbox)/config/bag_splitter.yaml"/>
+  <rosparam command="load" file="$(find mpl_dataset_toolbox)/config/message_topic.yaml"/>
+  <node pkg="mpl_dataset_toolbox" type="bag_splitter" name="bag_splitter" output="screen"/>
+</launch>

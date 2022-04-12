@@ -12,6 +12,7 @@
   <depend>geometry_msgs</depend>
   <depend>opencv</depend>
   <depend>prophesee_event_msgs</depend>
+  <depend>rosbag</depend>
   <depend>roscpp</depend>
   <depend>rospy</depend>
   <depend>sensor_msgs</depend>
