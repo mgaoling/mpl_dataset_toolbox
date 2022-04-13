@@ -1,0 +1,4 @@
+<launch>
+  <rosparam command="load" file="$(find mpl_dataset_toolbox)/config/bag_merger.yaml"/>
+  <node pkg="mpl_dataset_toolbox" type="bag_merger" name="bag_merger" output="screen"/>
+</launch>

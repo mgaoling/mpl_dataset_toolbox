@@ -31,10 +31,12 @@ link_directories(
   ${OpenCV_LIBRARY_DIRS}
 )
 
+add_executable(bag_merger src/bag_merger.cpp)
 add_executable(bag_splitter src/bag_splitter.cpp)
 add_executable(data_validation src/data_validation.cpp)
 add_executable(event_visualizer src/event_visualizer.cpp)
 
+target_link_libraries(bag_merger ${catkin_LIBRARIES})
 target_link_libraries(bag_splitter ${catkin_LIBRARIES})
 target_link_libraries(data_validation ${catkin_LIBRARIES})
 target_link_libraries(event_visualizer ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
