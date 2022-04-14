@@ -1,13 +1,9 @@
-#include <ros/ros.h>
 #include <utility.hpp>
 
-#define TS_DIFF_THLD  0.01         // 99% - 101%
-#define IMU_PERIOD    0.005000000  // 200Hz
-#define CAM_PERIOD    0.033333333  // 30Hz
-#define KINECT_PERIOD 0.033333333  // 30Hz
-#define LIDAR_PERIOD  0.100000000  // 10Hz
-#define GT_PERIOD     0.008333333  // 120Hz
-#define EVENT_SKIP_TS 5.0          // [s]
+#define TS_DIFF_THLD  0.01  // 99% - 101%
+#define EVENT_SKIP_TS 5.0   // [s]
+
+// ------------------------------------------------------------------------- //
 
 bool receive_imu          = false;
 bool receive_event_left   = false;
@@ -26,7 +22,7 @@ uint64_t prev_event_right_ts       = 0;
 double   prev_event_right_array_ts = 0;
 double   prev_camera_left_ts       = 0;
 double   prev_camera_right_ts      = 0;
-double   prev_kinect_rgb_ts        = 0;
+double   prev_kinect_color_ts      = 0;
 double   prev_kinect_depth_ts      = 0;
 double   prev_lidar_ts             = 0;
 double   prev_gt_ts                = 0;
@@ -104,10 +100,10 @@ void CameraLeftHandler(const Image::ConstPtr & image_message) {
     prev_camera_left_ts = image_message->header.stamp.toSec();
     ROS_INFO("%s", colorful_char::info("Receives data from the Left Regular Camera!").c_str());
   } else {
-    double left_rgb_ts_diff = image_message->header.stamp.toSec() - prev_camera_left_ts;
-    if (left_rgb_ts_diff < (1 - TS_DIFF_THLD) * CAM_PERIOD || left_rgb_ts_diff > (1 + TS_DIFF_THLD) * CAM_PERIOD)
+    double left_camera_ts_diff = image_message->header.stamp.toSec() - prev_camera_left_ts;
+    if (left_camera_ts_diff < (1 - TS_DIFF_THLD) * CAM_PERIOD || left_camera_ts_diff > (1 + TS_DIFF_THLD) * CAM_PERIOD)
       ROS_WARN("%s", colorful_char::warning("Left Image stream detects an unusual frequency!").c_str());
-    if (left_rgb_ts_diff < 0) ROS_WARN("%s", colorful_char::warning("Left Image stream detects a chronological error!").c_str());
+    if (left_camera_ts_diff < 0) ROS_WARN("%s", colorful_char::warning("Left Image stream detects a chronological error!").c_str());
     prev_camera_left_ts = image_message->header.stamp.toSec();
   }
 }
@@ -118,10 +114,10 @@ void CameraRightHandler(const Image::ConstPtr & image_message) {
     prev_camera_right_ts = image_message->header.stamp.toSec();
     ROS_INFO("%s", colorful_char::info("Receives data from the Right Regular Camera!").c_str());
   } else {
-    double right_rgb_ts_diff = image_message->header.stamp.toSec() - prev_camera_right_ts;
-    if (right_rgb_ts_diff < (1 - TS_DIFF_THLD) * CAM_PERIOD || right_rgb_ts_diff > (1 + TS_DIFF_THLD) * CAM_PERIOD)
+    double right_camera_ts_diff = image_message->header.stamp.toSec() - prev_camera_right_ts;
+    if (right_camera_ts_diff < (1 - TS_DIFF_THLD) * CAM_PERIOD || right_camera_ts_diff > (1 + TS_DIFF_THLD) * CAM_PERIOD)
       ROS_WARN("%s", colorful_char::warning("Right Image stream detects an unusual frequency!").c_str());
-    if (right_rgb_ts_diff < 0) ROS_WARN("%s", colorful_char::warning("Right Image stream detects a chronological error!").c_str());
+    if (right_camera_ts_diff < 0) ROS_WARN("%s", colorful_char::warning("Right Image stream detects a chronological error!").c_str());
     prev_camera_right_ts = image_message->header.stamp.toSec();
   }
 }
@@ -129,18 +125,18 @@ void CameraRightHandler(const Image::ConstPtr & image_message) {
 void KinectColorHandler(const Image::ConstPtr & image_message) {
   if (!receive_kinect_color) {
     receive_kinect_color = true;
-    prev_kinect_rgb_ts   = image_message->header.stamp.toSec();
+    prev_kinect_color_ts = image_message->header.stamp.toSec();
     ROS_INFO("%s", colorful_char::info("Receives data from the Kinect Color Camera!").c_str());
   } else {
-    double kinect_rgb_ts_diff = image_message->header.stamp.toSec() - prev_kinect_rgb_ts;
-    if (kinect_rgb_ts_diff > (2 - TS_DIFF_THLD) * KINECT_PERIOD && kinect_rgb_ts_diff < (2 + TS_DIFF_THLD) * KINECT_PERIOD)
+    double kinect_color_ts_diff = image_message->header.stamp.toSec() - prev_kinect_color_ts;
+    if (kinect_color_ts_diff > (2 - TS_DIFF_THLD) * KINECT_PERIOD && kinect_color_ts_diff < (2 + TS_DIFF_THLD) * KINECT_PERIOD)
       ROS_WARN("%s", colorful_char::warning("Kinect Color stream detects one lost frame!").c_str());
-    else if (kinect_rgb_ts_diff > (3 - TS_DIFF_THLD) * KINECT_PERIOD && kinect_rgb_ts_diff < (3 + TS_DIFF_THLD) * KINECT_PERIOD)
+    else if (kinect_color_ts_diff > (3 - TS_DIFF_THLD) * KINECT_PERIOD && kinect_color_ts_diff < (3 + TS_DIFF_THLD) * KINECT_PERIOD)
       ROS_WARN("%s", colorful_char::warning("Kinect Color stream detects two lost frame!").c_str());
-    else if (kinect_rgb_ts_diff < (1 - TS_DIFF_THLD) * KINECT_PERIOD || kinect_rgb_ts_diff > (1 + TS_DIFF_THLD) * KINECT_PERIOD)
+    else if (kinect_color_ts_diff < (1 - TS_DIFF_THLD) * KINECT_PERIOD || kinect_color_ts_diff > (1 + TS_DIFF_THLD) * KINECT_PERIOD)
       ROS_WARN("%s", colorful_char::warning("Kinect Color stream detects an unusual frequency!").c_str());
-    if (kinect_rgb_ts_diff < 0) ROS_WARN("%s", colorful_char::warning("Kinect Color stream detects a chronological error!").c_str());
-    prev_kinect_rgb_ts = image_message->header.stamp.toSec();
+    if (kinect_color_ts_diff < 0) ROS_WARN("%s", colorful_char::warning("Kinect Color stream detects a chronological error!").c_str());
+    prev_kinect_color_ts = image_message->header.stamp.toSec();
   }
 }
 
@@ -226,9 +222,10 @@ int main(int argc, char ** argv) {
     double event_left_end_ts     = event_left_ts.back() - EVENT_SKIP_TS;
     double event_left_duration   = event_left_end_ts - event_left_start_ts;
     double event_left_total_size = 0;
-    for (size_t i = 0; i < event_left_ts.size(); ++i)
-      if (event_left_ts[i] >= event_left_start_ts && event_left_ts[i] <= event_left_end_ts) event_left_total_size += event_left_size[i];
-    std::cout << colorful_char::info("The Mean Event Rate for Left Event stream is "
+    for (size_t idx = 0; idx < event_left_ts.size(); ++idx)
+      if (event_left_ts[idx] >= event_left_start_ts && event_left_ts[idx] <= event_left_end_ts)
+        event_left_total_size += event_left_size[idx];
+    std::cout << colorful_char::info("The Mean Event Rate for the Left Event stream is "
                                      + std::to_string(event_left_total_size / event_left_duration / 1000000)
                                      + " million events per second.")
               << std::endl;
@@ -237,11 +234,11 @@ int main(int argc, char ** argv) {
     double event_right_end_ts     = event_right_ts.back() - EVENT_SKIP_TS;
     double event_right_duration   = event_right_end_ts - event_right_start_ts;
     double event_right_total_size = 0;
-    for (size_t i = 0; i < event_right_ts.size(); ++i) {
-      if (event_right_ts[i] >= event_right_start_ts && event_right_ts[i] <= event_right_end_ts)
-        event_right_total_size += event_right_size[i];
+    for (size_t idx = 0; idx < event_right_ts.size(); ++idx) {
+      if (event_right_ts[idx] >= event_right_start_ts && event_right_ts[idx] <= event_right_end_ts)
+        event_right_total_size += event_right_size[idx];
     }
-    std::cout << colorful_char::info("The Mean Event Rate for Right Event stream is "
+    std::cout << colorful_char::info("The Mean Event Rate for the Right Event stream is "
                                      + std::to_string(event_right_total_size / event_right_duration / 1000000)
                                      + " million events per second.")
               << std::endl;

@@ -6,10 +6,17 @@
 #include <prophesee_event_msgs/Event.h>
 #include <prophesee_event_msgs/EventArray.h>
 #include <ros/package.h>
+#include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <string>
+
+#define IMU_PERIOD    0.005000000  // 200Hz
+#define CAM_PERIOD    0.033333333  // 30Hz
+#define KINECT_PERIOD 0.033333333  // 30Hz
+#define LIDAR_PERIOD  0.100000000  // 10Hz
+#define GT_PERIOD     0.008333333  // 120Hz
 
 using IMU         = sensor_msgs::Imu;
 using Event       = prophesee_event_msgs::Event;
@@ -17,6 +24,8 @@ using EventArray  = prophesee_event_msgs::EventArray;
 using Image       = sensor_msgs::Image;
 using PointCloud  = sensor_msgs::PointCloud2;
 using PoseStamped = geometry_msgs::PoseStamped;
+
+// ------------------------------------------------------------------------- //
 
 namespace colorful_char {
 
@@ -34,6 +43,8 @@ std::string error(std::string input_str) {
 
 }  // namespace colorful_char
 
+// ------------------------------------------------------------------------- //
+
 namespace fs = std::filesystem;
 
 // Check whether the directory/file path is absolute path or relative path, as well as its validness.
@@ -44,7 +55,7 @@ bool directory_path_check(std::string & path) {
     path = ros::package::getPath("mpl_dataset_toolbox") + path;
   }
   if (!fs::exists(path)) {
-    std::cerr << colorful_char::error("Invalid directory path: " + path) << std::endl;
+    ROS_ERROR("%s", colorful_char::error("Invalid directory path: " + path).c_str());
     return false;
   }
   return true;
@@ -56,7 +67,7 @@ bool file_path_check(std::string & path) {
     path = ros::package::getPath("mpl_dataset_toolbox") + path;
   }
   if (!fs::exists(path)) {
-    std::cerr << colorful_char::error("Invalid file path: " + path) << std::endl;
+    ROS_ERROR("%s", colorful_char::error("Invalid file path: " + path).c_str());
     return false;
   }
   return true;

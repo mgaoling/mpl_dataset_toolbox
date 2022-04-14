@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>mpl_dataset_toolbox</name>
-  <version>0.1.0</version>
+  <version>1.0.0</version>
   <description>The MPL Dataset Toolbox</description>
-  <maintainer email="mgaoling@gmail.com">Ling Gao</maintainer>
+  <maintainer email="gaoling@shanghaitech.edu.cn">Ling Gao</maintainer>
   <license>BSD-3-Clause-Clear</license>
   <url type="website">https://star-datasets.github.io/vector/download/</url>
 

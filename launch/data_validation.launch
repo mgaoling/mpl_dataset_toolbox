@@ -1,4 +1,4 @@
 <launch>
-  <rosparam command="load" file="$(find mpl_dataset_toolbox)/config/message_topic.yaml" />
+  <rosparam command="load" file="$(find mpl_dataset_toolbox)/config/message_topic.yaml"/>
   <node pkg="mpl_dataset_toolbox" type="data_validation" name="data_validation" output="screen"/>
 </launch>

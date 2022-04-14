@@ -1,8 +1,9 @@
 #include <cv_bridge/cv_bridge.h>
 #include <mutex>
 #include <opencv2/opencv.hpp>
-#include <ros/ros.h>
 #include <utility.hpp>
+
+// ------------------------------------------------------------------------- //
 
 std::mutex         mtx1, mtx2;
 std::vector<Event> event_buffer1, event_buffer2;
@@ -42,13 +43,13 @@ int main(int argc, char ** argv) {
   ros::param::get("out_frequency", out_freq);
   ros::param::get("thread_number", num_threads);
   if (in_topics.size() != out_topics.size()) {
-    std::cerr << colorful_char::error("The in and out topic number do not match with each other.") << std::endl;
+    ROS_ERROR("%s", colorful_char::error("The in and out topic number do not match with each other.").c_str());
     ros::shutdown();
-    return 0;
+    return -1;
   } else if (in_topics.size() > 2) {
-    std::cerr << colorful_char::error("The current version does not support more than two event cameras.") << std::endl;
+    ROS_ERROR("%s", colorful_char::error("The current version does not support more than two event cameras.").c_str());
     ros::shutdown();
-    return 0;
+    return -1;
   }
   int cam_num = in_topics.size();
 
@@ -115,7 +116,6 @@ int main(int argc, char ** argv) {
     rate.sleep();
     ros::spinOnce();
   }
-
   ros::shutdown();
   return 0;
 }
