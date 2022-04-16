@@ -13,9 +13,9 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 
 ### Requirement and Dependency
 
-- [Ubuntu 20.04 or 18.04](https://ubuntu.com/download/desktop)
-- [ROS Melodic or Noetic](http://wiki.ros.org/ROS/Installation)
-- [OpenCV 4 or 3](https://opencv.org/releases/)
+- [Ubuntu 20.04](https://ubuntu.com/download/desktop)
+- [ROS Noetic](http://wiki.ros.org/ROS/Installation)
+- [OpenCV 4.2](https://opencv.org/releases/)
 
 ### Compile
 
@@ -36,13 +36,13 @@ The event visualizer converts raw event stream into accumulated event frames. It
 - For monocular setup, check and modify the parameters in the `config/event_visualizer.yaml`, then launch the visualization by:
 
 ```
-roslaunch mpl_dataset_toolbox event_visualizer.launch
+roslaunch mpl_dataset_toolbox event_visualization.launch
 ```
 
 - For stereo setup, check and modify the parameters in the `config/event_stereo_visualizer.yaml`, then launch the visualization by:
 
 ```
-roslaunch mpl_dataset_toolbox event_stereo_visualizer.launch
+roslaunch mpl_dataset_toolbox event_stereo_visualization.launch
 ```
 
 - To visualize the rosbag, run `rqt` or `rqt_image_view` in another terminal to display the accumulated event frames, along with regular image frames.
@@ -60,16 +60,16 @@ roslaunch mpl_dataset_toolbox data_validation.launch
 - Play the rosbag in another terminal by:
 
 ```
-rosbag play [bag_path]
+rosbag play *.bag
 ```
 
 - Terminate the validation once the playback is over.
 
-**Note** Dropped frames on Kinect stream are to be expected, owing to the singularity of the depth calculation during recording. We have deliberately left a blank on the depth stream during the timeline reconstruction, to maintain the overall correctness.
+**Note:** Dropped frames on Kinect stream are to be expected, owing to the singularity of the depth calculation during recording. We have deliberately left a blank on the depth stream during the timeline reconstruction, to maintain the overall correctness.
 
 ### Bag Merger
 
-Bag merger helps to merge different single-topic bags chronologically. Note that data sequences with different prefixes can be safely stored under the same directory. **DO NOT MODIFY THE FILENAME!**
+Bag merger helps to merge different single-topic rosbags chronologically. Note that data sequences with different prefixes can be safely stored under the same directory. **DO NOT MODIFY THE FILENAME!**
 
 - Put all single-topic rosbags under one folder, then launch the bag merger by:
 
@@ -77,12 +77,16 @@ Bag merger helps to merge different single-topic bags chronologically. Note that
 roslaunch mpl_dataset_toolbox bag_merger.launch directory_path:=[path_to_directory]
 ```
 
-### Bag Splitter (optional)
+**Note:** Here, only an absolute path without `~`, or a relative path that is relative to this toolbox is allowed for the directory path.
 
-Bag Splitter helps to split a multi-topic bag into a few single-topic rosbags, with a compression option.
+### Bag Splitter
+
+Bag Splitter helps to split a multi-topic rosbag into a few single-topic rosbags, with a compression option.
 
 - Launch the bag splitter by:
 
 ```
 roslaunch mpl_dataset_toolbox bag_splitter.launch bag_path:=[path_to_bag] need_compression:=[true_or_false]
 ```
+
+**Note:** Here, only an absolute path without `~`, or a relative path that is relative to this toolbox is allowed for the rosbag path.
