@@ -9,19 +9,6 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 - [Bag Merger](https://github.com/mgaoling/mpl_dataset_toolbox#bag-merger): merge multiple, single-topic rosbags chronologically into one. 
 - [Bag Splitter](https://github.com/mgaoling/mpl_dataset_toolbox#bag-splitter-optional): split one multi-topic rosbag into a few compressed, single-topic rosbags.
 
-# License and Citation
-
-This toolbox, together with the [MPL Calibration Toolbox](https://github.com/mgaoling/mpl_calibration_toolbox), is available as open-source under the terms of the [BSD-3-Clause-Clear License](https://github.com/mgaoling/mpl_dataset_toolbox/blob/main/LICENSE.txt). If you use this toolbox in an academic context, please cite the [publication](https://star-datasets.github.io/vector/assets/pdf/vector.pdf) as follows:
-
-```bibtex
-@Article{gao2022vector,
-  author  = {Gao, Ling and Liang, Yuxuan and Yang, Jiaqi and Wu, Shaoxun and Wang, Chenyu and Chen, Jiaben, and Kneip, Laurent},
-  title   = {{VECtor}: A Versatile Event-Centric Benchmark for Multi-Sensor SLAM},
-  journal = {IEEE Robotics and Automation Letters"},
-  year    = {2022}
-}
-```
-
 # Getting Started
 
 ## Requirement and Dependency
