@@ -3,8 +3,8 @@
 
 #include <filesystem>
 #include <geometry_msgs/PoseStamped.h>
-#include <prophesee_event_msgs/Event.h>
-#include <prophesee_event_msgs/EventArray.h>
+#include <mpl_dataset_toolbox/Event.h>
+#include <mpl_dataset_toolbox/EventArray.h>
 #include <ros/package.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
@@ -19,8 +19,8 @@
 #define GT_PERIOD     0.008333333  // 120Hz
 
 using IMU         = sensor_msgs::Imu;
-using Event       = prophesee_event_msgs::Event;
-using EventArray  = prophesee_event_msgs::EventArray;
+using Event       = mpl_dataset_toolbox::Event;
+using EventArray  = mpl_dataset_toolbox::EventArray;
 using Image       = sensor_msgs::Image;
 using PointCloud  = sensor_msgs::PointCloud2;
 using PoseStamped = geometry_msgs::PoseStamped;

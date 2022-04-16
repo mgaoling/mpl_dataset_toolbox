@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 -fopenmp")
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
-  prophesee_event_msgs
+  message_generation
   rosbag
   roscpp
   rospy
@@ -15,6 +15,17 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(OpenCV REQUIRED)
+
+add_message_files(
+  FILES
+  Event.msg
+  EventArray.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+)
 
 catkin_package(
   INCLUDE_DIRS include

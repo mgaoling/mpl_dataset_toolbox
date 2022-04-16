@@ -11,14 +11,13 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 
 # Getting Started
 
-## Requirement and Dependency
+### Requirement and Dependency
 
 - [Ubuntu 20.04 or 18.04](https://ubuntu.com/download/desktop)
 - [ROS Melodic or Noetic](http://wiki.ros.org/ROS/Installation)
 - [OpenCV 4 or 3](https://opencv.org/releases/)
-- [Prophesee ROS Wrapper](https://github.com/prophesee-ai/prophesee_ros_wrapper)
 
-## Compile
+### Compile
 
 ```
 cd ~/catkin_ws/src
@@ -30,7 +29,7 @@ source ~/catkin_ws/devel/setup.bash
 
 # Usage
 
-## Event Visualizer
+### Event Visualizer
 
 The event visualizer converts raw event stream into accumulated event frames. It can handle at most two different event streams.
 
@@ -48,7 +47,7 @@ roslaunch mpl_dataset_toolbox event_stereo_visualizer.launch
 
 - To visualize the rosbag, run `rqt` or `rqt_image_view` in another terminal to display the accumulated event frames, along with regular image frames.
 
-## Data Validator
+### Data Validator
 
 The data validator helps to check the correctness and completeness of a downloaded, single-topic rosbag or a merged rosbag. It also calculates the Mean Event Rate if the event stream exists.
 
@@ -68,7 +67,7 @@ rosbag play [bag_path]
 
 **Note** Dropped frames on Kinect stream are to be expected, owing to the singularity of the depth calculation during recording. We have deliberately left a blank on the depth stream during the timeline reconstruction, to maintain the overall correctness.
 
-## Bag Merger
+### Bag Merger
 
 Bag merger helps to merge different single-topic bags chronologically. Note that data sequences with different prefixes can be safely stored under the same directory. **DO NOT MODIFY THE FILENAME!**
 
@@ -78,7 +77,7 @@ Bag merger helps to merge different single-topic bags chronologically. Note that
 roslaunch mpl_dataset_toolbox bag_merger.launch directory_path:=[path_to_directory]
 ```
 
-## Bag Splitter (optional)
+### Bag Splitter (optional)
 
 Bag Splitter helps to split a multi-topic bag into a few single-topic rosbags, with a compression option.
 
