@@ -190,7 +190,7 @@ void GroundTruthHandler(const PoseStamped::ConstPtr & pose_stamped_message) {
 // ------------------------------------------------------------------------- //
 
 int main(int argc, char ** argv) {
-  ros::init(argc, argv, "data_validation");
+  ros::init(argc, argv, "data_validator");
   ros::NodeHandle nh;
 
   std::string imu_topic, event_left_topic, event_right_topic, camera_left_topic, camera_right_topic, kinect_color_topic, kinect_depth_topic,
@@ -217,7 +217,7 @@ int main(int argc, char ** argv) {
   ros::spin();
 
   // By cutting off the first and last X seconds, calculate the Mean Event Rate for each event streaem.
-  if (!ros::ok()) {
+  if (!ros::ok() && receive_event_left) {
     double event_left_start_ts   = event_left_ts.front() + EVENT_SKIP_TS;
     double event_left_end_ts     = event_left_ts.back() - EVENT_SKIP_TS;
     double event_left_duration   = event_left_end_ts - event_left_start_ts;
@@ -229,7 +229,8 @@ int main(int argc, char ** argv) {
                                      + std::to_string(event_left_total_size / event_left_duration / 1000000)
                                      + " million events per second.")
               << std::endl;
-
+  }
+  if (!ros::ok() && receive_event_right) {
     double event_right_start_ts   = event_right_ts.front() + EVENT_SKIP_TS;
     double event_right_end_ts     = event_right_ts.back() - EVENT_SKIP_TS;
     double event_right_duration   = event_right_end_ts - event_right_start_ts;
