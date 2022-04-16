@@ -58,11 +58,11 @@ void PrintDirectoryInfo(std::map<std::string, std::vector<int>> & out_bags_info)
       if (topic_id != bag_it->second.back()) topic_list += " | ";
     }
     if (bag_it->second.size() == 1) {
-      std::cout << "Data Sequence Name:   \033[1;36m" << bag_it->first << "\033[0m" << std::endl;
-      std::cout << "Data Sequence Topic:  \033[1;36m" << topic_list << "\033[1;31m --> Single bag cannot be merged! \033[0m" << std::endl;
+      ROS_INFO_STREAM("Data Sequence Name:   \033[1;36m" << bag_it->first << "\033[0m");
+      ROS_INFO_STREAM("Data Sequence Topic:  \033[1;36m" << topic_list << "\033[1;31m --> Single bag cannot be merged! \033[0m");
     } else {
-      std::cout << "Data Sequence Name:   \033[1;36m" << bag_it->first << "\033[0m" << std::endl;
-      std::cout << "Data Sequence Topics: \033[1;36m" << topic_list << "\033[0m" << std::endl;
+      ROS_INFO_STREAM("Data Sequence Name:   \033[1;36m" << bag_it->first << "\033[0m");
+      ROS_INFO_STREAM("Data Sequence Topics: \033[1;36m" << topic_list << "\033[0m");
     }
   }
 }
@@ -155,7 +155,7 @@ int main(int argc, char ** argv) {
       }
 
       ++msg_idx;
-      if (msg_idx % 10000 == 0)
+      if (msg_idx % 100000 == 0)
         ROS_INFO_STREAM(msg_idx << "/" << msg_size << " messages from data sequence \"" << bag_it->first << "\" have been processed.");
     }
     ROS_INFO("%s", colorful_char::info("All \"" + bag_it->first + "\"-related bags have been merged into a new bag! Enjoy!").c_str());
