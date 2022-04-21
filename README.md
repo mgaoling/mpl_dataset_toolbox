@@ -6,18 +6,18 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 
 - [Event Visualizer](https://github.com/mgaoling/mpl_dataset_toolbox#event-visualizer): convert raw event stream into accumulated event frames.
 - [Data Validator](https://github.com/mgaoling/mpl_dataset_toolbox#data-validator): validate the downloaded rosbag or the merged rosbag for its completeness.
-- [Bag Merger](https://github.com/mgaoling/mpl_dataset_toolbox#bag-merger): merge multiple, single-topic rosbags chronologically into one. 
-- [Bag Splitter](https://github.com/mgaoling/mpl_dataset_toolbox#bag-splitter-optional): split one multi-topic rosbag into a few compressed, single-topic rosbags.
+- [Bag Merger](https://github.com/mgaoling/mpl_dataset_toolbox#bag-merger): merge multiple, single-topic rosbags chronologically into one complete rosbag.
+- [Bag Splitter](https://github.com/mgaoling/mpl_dataset_toolbox#bag-splitter): split one multi-topic rosbag into a few compressed, single-topic rosbags.
 
 # Getting Started
 
-### Requirement and Dependency
+The following instructions are tested on [Ubuntu 20.04](https://ubuntu.com/download/desktop) with [ROS Noetic](http://wiki.ros.org/ROS/Installation), a ROS **desktop-full installation** is therefore required. On top of that, the [OpenCV Library](https://opencv.org/releases/) has to be installed:
 
-- [Ubuntu 20.04](https://ubuntu.com/download/desktop)
-- [ROS Noetic](http://wiki.ros.org/ROS/Installation)
-- [OpenCV 4.2](https://opencv.org/releases/)
+```
+sudo apt-get install libopencv-dev
+```
 
-### Compile
+After that, enter your catkin workspace and the build can be triggered with the following command:
 
 ```
 cd ~/catkin_ws/src
@@ -27,9 +27,7 @@ catkin_make
 source ~/catkin_ws/devel/setup.bash
 ```
 
-# Usage
-
-### Event Visualizer
+# Event Visualizer
 
 The event visualizer converts raw event stream into accumulated event frames. It can handle at most two different event streams.
 
@@ -45,9 +43,9 @@ roslaunch mpl_dataset_toolbox event_visualization.launch
 roslaunch mpl_dataset_toolbox event_stereo_visualization.launch
 ```
 
-- To visualize the rosbag, run `rqt` or `rqt_image_view` in another terminal to display the accumulated event frames, along with regular image frames.
+- To visualize the rosbag, run `rqt` or `rqt_image_view` in another terminal to display the accumulated event frames.
 
-### Data Validator
+# Data Validator
 
 The data validator helps to check the correctness and completeness of a downloaded, single-topic rosbag or a merged rosbag. It also calculates the Mean Event Rate if the event stream exists.
 
@@ -60,14 +58,14 @@ roslaunch mpl_dataset_toolbox data_validation.launch
 - Play the rosbag in another terminal by:
 
 ```
-rosbag play *.bag
+rosbag play [data.bag]
 ```
 
 - Terminate the validation once the playback is over.
 
 **Note:** Dropped frames on Kinect stream are to be expected, owing to the singularity of the depth calculation during recording. We have deliberately left a blank on the depth stream during the timeline reconstruction, to maintain the overall correctness.
 
-### Bag Merger
+# Bag Merger
 
 Bag merger helps to merge different single-topic rosbags chronologically. Note that data sequences with different prefixes can be safely stored under the same directory. **DO NOT MODIFY THE FILENAME!**
 
@@ -79,14 +77,14 @@ roslaunch mpl_dataset_toolbox bag_merger.launch directory_path:=[path_to_directo
 
 **Note:** Here, only an absolute path without `~`, or a relative path that is relative to this toolbox is allowed for the directory path.
 
-### Bag Splitter
+# Bag Splitter
 
 Bag Splitter helps to split a multi-topic rosbag into a few single-topic rosbags, with a compression option.
 
 - Launch the bag splitter by:
 
 ```
-roslaunch mpl_dataset_toolbox bag_splitter.launch bag_path:=[path_to_bag] need_compression:=[true_or_false]
+roslaunch mpl_dataset_toolbox bag_splitter.launch bag_path:=[data.bag] need_compression:=[true_or_false]
 ```
 
 **Note:** Here, only an absolute path without `~`, or a relative path that is relative to this toolbox is allowed for the rosbag path.
