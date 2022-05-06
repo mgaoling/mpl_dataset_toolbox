@@ -8,7 +8,7 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 - [Data Validator](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#data-validator): validate the downloaded rosbag or the merged rosbag for its completeness.
 - [Bag Merger](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#bag-merger): merge multiple, single-topic rosbags chronologically into one complete rosbag.
 - [Bag Splitter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#bag-splitter): split one multi-topic rosbag into a few compressed, single-topic rosbags.
-- [Timeline Reconstruction](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): reconstruct raw recording's timeline for each data channel.
+- [Timeline Reconstructor](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): reconstruct raw recording's timeline for each data channel.
 - [Bag-to-HDF5 Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert event stream(s) into compressed HDF5 file(s) under [DSEC format](https://dsec.ifi.uzh.ch/data-format/).
 - [Bag-to-Rawfile Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert all other data stream(s) into raw file(s).
 - [CSV-to-TUM Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert OptiTrack readings into text file under [TUM format](https://vision.in.tum.de/data/datasets/rgbd-dataset/file_formats).
@@ -97,7 +97,7 @@ roslaunch mpl_dataset_toolbox bag_splitter.launch bag_path:=[data.bag] need_comp
 
 # Tool Kit
 
-### Timeline Reconstruction
+### Timeline Reconstructor
 
 ```
 roslaunch mpl_dataset_toolbox timeline_reconstruction.launch bag_path:=[data.bag] gt_path:=[ground_truth.csv]
