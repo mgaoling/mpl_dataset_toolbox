@@ -9,9 +9,9 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 - [Bag Merger](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#bag-merger): merge multiple, single-topic rosbags chronologically into one complete rosbag.
 - [Bag Splitter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#bag-splitter): split one multi-topic rosbag into a few compressed, single-topic rosbags.
 - [Timeline Reconstruction](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): reconstruct raw recording's timeline for each data channel.
-- [Bag-to-Hdf5 Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert event stream(s) into compressed HDF5 file(s).
-- [Bag-to-Rawfile Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert all other stream(s) into raw file(s).
-- [CSV-to-TUM Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert raw OptiTrack readings into txt file under [TUM format](https://vision.in.tum.de/data/datasets/rgbd-dataset/file_formats).
+- [Bag-to-HDF5 Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert event stream(s) into compressed HDF5 file(s) under [DSEC format](https://dsec.ifi.uzh.ch/data-format/).
+- [Bag-to-Rawfile Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert all other data stream(s) into raw file(s).
+- [CSV-to-TUM Converter](https://github.com/mgaoling/mpl_dataset_toolbox/tree/data_processing_module#tool-kit): convert OptiTrack readings into text file under [TUM format](https://vision.in.tum.de/data/datasets/rgbd-dataset/file_formats).
 
 # Getting Started
 
@@ -27,7 +27,7 @@ After that, enter your catkin workspace and the build can be triggered with the 
 
 ```
 cd ~/catkin_ws/src
-git clone https://github.com/mgaoling/mpl_dataset_toolbox.git
+git clone -b data_processing_module https://github.com/mgaoling/mpl_dataset_toolbox.git
 cd ..
 catkin_make
 source ~/catkin_ws/devel/setup.bash
@@ -103,7 +103,7 @@ roslaunch mpl_dataset_toolbox bag_splitter.launch bag_path:=[data.bag] need_comp
 roslaunch mpl_dataset_toolbox timeline_reconstruction.launch bag_path:=[data.bag] gt_path:=[ground_truth.csv]
 ```
 
-### Bag-to-Hdf5 Converter
+### Bag-to-HDF5 Converter
 
 ```
 roscd mpl_dataset_toolbox/script
