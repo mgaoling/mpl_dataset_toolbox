@@ -9,14 +9,6 @@
 
 // ------------------------------------------------------------------------- //
 
-std::string int2str(int index) {
-  std::stringstream str_idx;
-  str_idx << std::setw(6) << std::setfill('0') << index;
-  return str_idx.str();
-}
-
-// ------------------------------------------------------------------------- //
-
 int main(int argc, char ** argv) {
   ros::init(argc, argv, "bag2rawfile");
   ros::NodeHandle nh;
@@ -40,8 +32,7 @@ int main(int argc, char ** argv) {
   }
   rosbag::Bag bag_in;
   bag_in.open(bag_in_path, rosbag::bagmode::Read);
-  std::ofstream imu_txt, left_camera_txt, right_camera_txt, kinect_depth_txt, lidar_txt;
-  size_t        left_camera_idx, right_camera_idx, kinect_depth_idx, lidar_idx;
+  std::ofstream imu_txt, left_camera_txt, right_camera_txt;
 
   std::string folder_path, bag_name, out_path;
   folder_path = bag_in_path.substr(0, bag_in_path.find_last_of("/\\") + 1);
@@ -62,71 +53,64 @@ int main(int argc, char ** argv) {
                 << "# timestamp gx gy gz ax ay az qx qy qz qw" << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the IMU!").c_str());
       }
-      imu_txt << std::setprecision(19) << imu_msg->header.stamp.toSec() << " " << imu_msg->angular_velocity.x << " "
-              << imu_msg->angular_velocity.y << " " << imu_msg->angular_velocity.z << " " << imu_msg->linear_acceleration.x << " "
-              << imu_msg->linear_acceleration.y << " " << imu_msg->linear_acceleration.z << " " << imu_msg->orientation.x << " "
-              << imu_msg->orientation.y << " " << imu_msg->orientation.z << " " << imu_msg->orientation.w << std::endl;
+      imu_txt << std::to_string(imu_msg->header.stamp.toSec()) << " " << imu_msg->angular_velocity.x << " " << imu_msg->angular_velocity.y
+              << " " << imu_msg->angular_velocity.z << " " << imu_msg->linear_acceleration.x << " " << imu_msg->linear_acceleration.y << " "
+              << imu_msg->linear_acceleration.z << " " << imu_msg->orientation.x << " " << imu_msg->orientation.y << " "
+              << imu_msg->orientation.z << " " << imu_msg->orientation.w << std::endl;
     }
 
     else if (msg.getTopic() == camera_left_topic) {
       Image::Ptr img_msg = msg.instantiate<Image>();
       if (!receive_camera_left) {
         receive_camera_left = true;
-        left_camera_idx     = 0;
         fs::create_directory(out_path + "left_regular_camera/");
         left_camera_txt = std::ofstream(out_path + "left_regular_camera/timestamp.txt", std::ofstream::out);
         left_camera_txt << "# Left Regular Camera's timestamp data for " << bag_name << std::endl
                         << "# start and end of the exposure time[s] for each image" << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the Left Regular Camera!").c_str());
       }
-      left_camera_txt << std::setprecision(19) << img_msg->header.stamp.toSec() << " " << img_msg->header.stamp.toSec() + 0.010
+      left_camera_txt << std::to_string(img_msg->header.stamp.toSec()) << " " << std::to_string(img_msg->header.stamp.toSec() + 0.010)
                       << std::endl;
-      cv::imwrite(out_path + "left_regular_camera/" + int2str(left_camera_idx++) + ".png", cv_bridge::toCvCopy(img_msg)->image);
+      cv::imwrite(out_path + "left_regular_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
+                  cv_bridge::toCvCopy(img_msg)->image);
     }
 
     else if (msg.getTopic() == camera_right_topic) {
       Image::Ptr img_msg = msg.instantiate<Image>();
       if (!receive_camera_right) {
         receive_camera_right = true;
-        right_camera_idx     = 0;
         fs::create_directory(out_path + "right_regular_camera/");
         right_camera_txt = std::ofstream(out_path + "right_regular_camera/timestamp.txt", std::ofstream::out);
         right_camera_txt << "# Right Regular Camera's timestamp data for " << bag_name << std::endl
                          << "# start and end of the exposure time[s] for each image" << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the Right Regular Camera!").c_str());
       }
-      right_camera_txt << std::setprecision(19) << img_msg->header.stamp.toSec() << " " << img_msg->header.stamp.toSec() + 0.010
+      right_camera_txt << std::to_string(img_msg->header.stamp.toSec()) << " " << std::to_string(img_msg->header.stamp.toSec() + 0.010)
                        << std::endl;
-      cv::imwrite(out_path + "right_regular_camera/" + int2str(right_camera_idx++) + ".png", cv_bridge::toCvCopy(img_msg)->image);
+      cv::imwrite(out_path + "right_regular_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
+                  cv_bridge::toCvCopy(img_msg)->image);
     }
 
     else if (msg.getTopic() == kinect_depth_topic) {
       Image::Ptr img_msg = msg.instantiate<Image>();
       if (!receive_kinect_depth) {
         receive_kinect_depth = true;
-        kinect_depth_idx     = 0;
         fs::create_directory(out_path + "kinect_depth_camera/");
-        kinect_depth_txt = std::ofstream(out_path + "kinect_depth_camera/timestamp.txt", std::ofstream::out);
-        kinect_depth_txt << "# Kinect Depth Camera's timestamp data for " << bag_name << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the Kinect Depth Camera!").c_str());
       }
-      kinect_depth_txt << std::setprecision(19) << img_msg->header.stamp.toSec() << std::endl;
-      cv::imwrite(out_path + "kinect_depth_camera/" + int2str(kinect_depth_idx++) + ".png", cv_bridge::toCvCopy(img_msg)->image);
+      cv::imwrite(out_path + "kinect_depth_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
+                  cv_bridge::toCvCopy(img_msg)->image);
     }
 
     else if (msg.getTopic() == lidar_topic) {
       PointCloud::Ptr cloud_msg = msg.instantiate<PointCloud>();
       if (!receive_lidar) {
         receive_lidar = true;
-        lidar_idx     = 0;
         fs::create_directory(out_path + "lidar/");
-        lidar_txt = std::ofstream(out_path + "lidar/timestamp.txt", std::ofstream::out);
-        lidar_txt << "# LiDAR's timestamp data for " << bag_name << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the LiDAR!").c_str());
       }
-      lidar_txt << std::setprecision(19) << cloud_msg->header.stamp.toSec() << std::endl;
-      pcl::io::savePCDFile(out_path + "lidar/" + int2str(lidar_idx++) + ".pcd", *cloud_msg, Eigen::Vector4f::Zero(),
-                           Eigen::Quaternionf::Identity(), true);
+      pcl::io::savePCDFile(out_path + "lidar/" + std::to_string(cloud_msg->header.stamp.toSec()) + ".pcd", *cloud_msg,
+                           Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), true);
     }
 
     msg_idx++;
@@ -137,8 +121,6 @@ int main(int argc, char ** argv) {
   if (receive_imu) imu_txt.close();
   if (receive_camera_left) left_camera_txt.close();
   if (receive_camera_right) right_camera_txt.close();
-  if (receive_kinect_depth) kinect_depth_txt.close();
-  if (receive_lidar) lidar_txt.close();
 
   ros::shutdown();
   return 0;
