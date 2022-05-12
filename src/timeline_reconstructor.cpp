@@ -56,13 +56,14 @@ int main(int argc, char ** argv) {
     receive_gt         = true;
     u_int32_t   gt_seq = 0;
     std::string input_line;
+    // Ground Truth in OptiTrack format.
     for (size_t idx = 0; idx < 7; ++idx) std::getline(gt_file, input_line);
     while (std::getline(gt_file, input_line)) {
       std::vector<std::string> input_data(9, "");
       std::istringstream       read_data(input_line);
       for (size_t idx = 0; idx < 9; ++idx) std::getline(read_data, input_data[idx], ',');
       gt_buffer.emplace_back(boost::make_shared<PoseStamped>());
-      gt_buffer.back()->header.stamp       = ros::Time().fromSec(gt_seq * GT_PERIOD);
+      gt_buffer.back()->header.stamp       = ros::Time().fromSec(gt_seq * GT_PERIOD);  // Make sure GT_PERIOD = 0.100000000
       gt_buffer.back()->header.seq         = gt_seq++;
       gt_buffer.back()->pose.orientation.x = atof(input_data[2].c_str());
       gt_buffer.back()->pose.orientation.y = atof(input_data[3].c_str());
@@ -72,6 +73,22 @@ int main(int argc, char ** argv) {
       gt_buffer.back()->pose.position.y    = atof(input_data[7].c_str());
       gt_buffer.back()->pose.position.z    = atof(input_data[8].c_str());
     }
+    // Ground Truth in TUM format.
+    // while (std::getline(gt_file, input_line)) {
+    //   std::vector<std::string> input_data(8, "");
+    //   std::istringstream       read_data(input_line);
+    //   for (size_t idx = 0; idx < 8; ++idx) std::getline(read_data, input_data[idx], ' ');
+    //   gt_buffer.emplace_back(boost::make_shared<PoseStamped>());
+    //   gt_buffer.back()->header.stamp = ros::Time().fromSec(gt_seq * GT_PERIOD);  // Make sure GT_PERIOD = 0.008333333
+    //   gt_buffer.back()->header.seq         = gt_seq++;
+    //   gt_buffer.back()->pose.orientation.x = atof(input_data[4].c_str());
+    //   gt_buffer.back()->pose.orientation.y = atof(input_data[5].c_str());
+    //   gt_buffer.back()->pose.orientation.z = atof(input_data[6].c_str());
+    //   gt_buffer.back()->pose.orientation.w = atof(input_data[7].c_str());
+    //   gt_buffer.back()->pose.position.x    = atof(input_data[1].c_str());
+    //   gt_buffer.back()->pose.position.y    = atof(input_data[2].c_str());
+    //   gt_buffer.back()->pose.position.z    = atof(input_data[3].c_str());
+    // }
     ROS_INFO("%s", colorful_char::info("Successfully load the Ground Truth file!").c_str());
   }
 
