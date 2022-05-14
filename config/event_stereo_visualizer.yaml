@@ -7,4 +7,3 @@ out_event_frame_topic: [
   "/prophesee/right/event_frame"
 ]
 out_frequency: 30 # [Hz]
-thread_number: 2

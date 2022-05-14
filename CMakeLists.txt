@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(mpl_dataset_toolbox)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3")
 
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   geometry_msgs
   message_generation
+  # prophesee_event_msgs
   rosbag
   roscpp
   rospy

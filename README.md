@@ -11,7 +11,7 @@ This toolbox is a ROS workspace integrating with a set of easy-to-use dataset fu
 
 # Getting Started
 
-The following instructions are tested on [Ubuntu 20.04](https://ubuntu.com/download/desktop) with [ROS Noetic](http://wiki.ros.org/ROS/Installation), a ROS **desktop-full installation** is therefore required. On top of that, the following libraries ([Eigen 3](https://eigen.tuxfamily.org/index.php?title=Main_Page), [OpenCV 4.2](https://opencv.org/releases/)) have to be installed:
+The following instructions are tested on (A) [Ubuntu 18.04](https://ubuntu.com/download/desktop) with [ROS Melodic](http://wiki.ros.org/ROS/Installation), and (B) [Ubuntu 20.04](https://ubuntu.com/download/desktop) with [ROS Noetic](http://wiki.ros.org/ROS/Installation). A ROS **desktop-full installation** is required. On top of that, the following libraries ([Eigen 3](https://eigen.tuxfamily.org/index.php?title=Main_Page), [OpenCV 4.2](https://opencv.org/releases/)) have to be installed:
 
 ```
 sudo apt-get update
