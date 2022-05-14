@@ -47,7 +47,7 @@ int main(int argc, char ** argv) {
       IMU::Ptr imu_msg = msg.instantiate<IMU>();
       if (!receive_imu) {
         receive_imu = true;
-        imu_txt     = std::ofstream(out_path + bag_name + ".imu.txt", std::ofstream::out);
+        imu_txt     = std::ofstream(out_path + ".imu.txt", std::ofstream::out);
         imu_txt << "# IMU data for " << bag_name << std::endl
                 << "# Readings from gyroscope[rad/s], accelerometer[m/s^2], and magnetometer[quaternion]" << std::endl
                 << "# timestamp gx gy gz ax ay az qx qy qz qw" << std::endl;
