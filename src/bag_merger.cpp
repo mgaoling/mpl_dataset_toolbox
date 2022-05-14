@@ -7,7 +7,7 @@
 int BagNameParser(const std::string & file_name, std::string & prefix) {
   bool last_dot     = false;
   int  last_dot_idx = -1;
-  for (size_t idx = file_name.size() - 1; idx >= 0; --idx) {
+  for (int idx = file_name.size() - 1; idx >= 0; --idx) {
     if (!last_dot && file_name[idx] == '.') {
       last_dot     = true;
       last_dot_idx = idx;

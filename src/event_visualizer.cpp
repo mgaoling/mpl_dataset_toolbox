@@ -37,11 +37,10 @@ int main(int argc, char ** argv) {
 
   // Read and validate the input parameters from config.
   std::vector<std::string> in_topics, out_topics;
-  int                      out_freq, num_threads;
+  int                      out_freq;
   ros::param::get("in_event_stream_topic", in_topics);
   ros::param::get("out_event_frame_topic", out_topics);
   ros::param::get("out_frequency", out_freq);
-  ros::param::get("thread_number", num_threads);
   if (in_topics.size() != out_topics.size()) {
     ROS_ERROR("%s", colorful_char::error("The in and out topic number do not match with each other.").c_str());
     ros::shutdown();
@@ -87,7 +86,6 @@ int main(int argc, char ** argv) {
     // Accumulate events onto the image canvas. Note that, only the last event will be displayed on the canvas with its polarity.
     cv_bridge::CvImage event_frame1, event_frame2;
     event_frame1.image = cv::Mat(cam1_height, cam1_width, CV_8UC3, cv::Vec3b(255, 255, 255));
-#pragma omp parallel for num_threads(num_threads)
     for (auto & event : event_holder1) {
       if (event.polarity) event_frame1.image.at<cv::Vec3b>(event.y, event.x) = cv::Vec3b(255, 0, 0);  // positive - blue
       else
@@ -95,7 +93,6 @@ int main(int argc, char ** argv) {
     }
     if (cam_num == 2) {
       event_frame2.image = cv::Mat(cam2_height, cam2_width, CV_8UC3, cv::Vec3b(255, 255, 255));
-#pragma omp parallel for num_threads(num_threads)
       for (auto & event : event_holder2) {
         if (event.polarity) event_frame2.image.at<cv::Vec3b>(event.y, event.x) = cv::Vec3b(255, 0, 0);
         else
