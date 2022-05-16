@@ -29,8 +29,8 @@ if __name__ == "__main__":
 
     data_path = args.dataset
     data_path_without_extension, _ = os.path.splitext(data_path)
-    event_left_out_path = data_path_without_extension + '.event_left.hdf5'
-    event_right_out_path = data_path_without_extension + '.event_right.hdf5'
+    event_left_out_path = data_path_without_extension + '.left_event.hdf5'
+    event_right_out_path = data_path_without_extension + '.right_event.hdf5'
     event_left_file = h5py.File(event_left_out_path, 'w')
     event_right_file = h5py.File(event_right_out_path, 'w')
 

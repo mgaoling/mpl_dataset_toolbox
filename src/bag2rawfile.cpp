@@ -37,7 +37,7 @@ int main(int argc, char ** argv) {
   std::string folder_path, bag_name, out_path;
   folder_path = bag_in_path.substr(0, bag_in_path.find_last_of("/\\") + 1);
   bag_name    = bag_in_path.substr(bag_in_path.find_last_of("/\\") + 1, bag_in_path.size() - bag_in_path.find_last_of("/\\") - 5);
-  out_path    = folder_path + "/raw_data/";
+  out_path    = folder_path + "raw_data/";
   fs::create_directory(out_path);
 
   uint32_t msg_idx  = 0;
@@ -47,7 +47,7 @@ int main(int argc, char ** argv) {
       IMU::Ptr imu_msg = msg.instantiate<IMU>();
       if (!receive_imu) {
         receive_imu = true;
-        imu_txt     = std::ofstream(out_path + ".imu.txt", std::ofstream::out);
+        imu_txt     = std::ofstream(out_path + bag_name + ".imu.txt", std::ofstream::out);
         imu_txt << "# IMU data for " << bag_name << std::endl
                 << "# Readings from gyroscope[rad/s], accelerometer[m/s^2], and magnetometer[quaternion]" << std::endl
                 << "# timestamp gx gy gz ax ay az qx qy qz qw" << std::endl;
@@ -63,15 +63,15 @@ int main(int argc, char ** argv) {
       Image::Ptr img_msg = msg.instantiate<Image>();
       if (!receive_camera_left) {
         receive_camera_left = true;
-        fs::create_directory(out_path + "left_regular_camera/");
-        left_camera_txt = std::ofstream(out_path + "left_regular_camera/timestamp.txt", std::ofstream::out);
+        fs::create_directory(out_path + bag_name + ".left_camera/");
+        left_camera_txt = std::ofstream(out_path + bag_name + ".left_camera/timestamp.txt", std::ofstream::out);
         left_camera_txt << "# Left Regular Camera's timestamp data for " << bag_name << std::endl
                         << "# start and end of the exposure time[s] for each image" << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the Left Regular Camera!").c_str());
       }
       left_camera_txt << std::to_string(img_msg->header.stamp.toSec()) << " " << std::to_string(img_msg->header.stamp.toSec() + 0.010)
                       << std::endl;
-      cv::imwrite(out_path + "left_regular_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
+      cv::imwrite(out_path + bag_name + ".left_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
                   cv_bridge::toCvCopy(img_msg)->image);
     }
 
@@ -79,15 +79,15 @@ int main(int argc, char ** argv) {
       Image::Ptr img_msg = msg.instantiate<Image>();
       if (!receive_camera_right) {
         receive_camera_right = true;
-        fs::create_directory(out_path + "right_regular_camera/");
-        right_camera_txt = std::ofstream(out_path + "right_regular_camera/timestamp.txt", std::ofstream::out);
+        fs::create_directory(out_path + bag_name + ".right_camera/");
+        right_camera_txt = std::ofstream(out_path + bag_name + ".right_camera/timestamp.txt", std::ofstream::out);
         right_camera_txt << "# Right Regular Camera's timestamp data for " << bag_name << std::endl
                          << "# start and end of the exposure time[s] for each image" << std::endl;
         ROS_INFO("%s", colorful_char::info("Receives data from the Right Regular Camera!").c_str());
       }
       right_camera_txt << std::to_string(img_msg->header.stamp.toSec()) << " " << std::to_string(img_msg->header.stamp.toSec() + 0.010)
                        << std::endl;
-      cv::imwrite(out_path + "right_regular_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
+      cv::imwrite(out_path + bag_name + ".right_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
                   cv_bridge::toCvCopy(img_msg)->image);
     }
 
@@ -95,10 +95,10 @@ int main(int argc, char ** argv) {
       Image::Ptr img_msg = msg.instantiate<Image>();
       if (!receive_kinect_depth) {
         receive_kinect_depth = true;
-        fs::create_directory(out_path + "kinect_depth_camera/");
+        fs::create_directory(out_path + bag_name + ".kinect_depth/");
         ROS_INFO("%s", colorful_char::info("Receives data from the Kinect Depth Camera!").c_str());
       }
-      cv::imwrite(out_path + "kinect_depth_camera/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
+      cv::imwrite(out_path + bag_name + ".kinect_depth/" + std::to_string(img_msg->header.stamp.toSec()) + ".png",
                   cv_bridge::toCvCopy(img_msg)->image);
     }
 
@@ -106,10 +106,10 @@ int main(int argc, char ** argv) {
       PointCloud::Ptr cloud_msg = msg.instantiate<PointCloud>();
       if (!receive_lidar) {
         receive_lidar = true;
-        fs::create_directory(out_path + "lidar/");
+        fs::create_directory(out_path + bag_name + ".lidar/");
         ROS_INFO("%s", colorful_char::info("Receives data from the LiDAR!").c_str());
       }
-      pcl::io::savePCDFile(out_path + "lidar/" + std::to_string(cloud_msg->header.stamp.toSec()) + ".pcd", *cloud_msg,
+      pcl::io::savePCDFile(out_path + bag_name + ".lidar/" + std::to_string(cloud_msg->header.stamp.toSec()) + ".pcd", *cloud_msg,
                            Eigen::Vector4f::Zero(), Eigen::Quaternionf::Identity(), true);
     }
 
