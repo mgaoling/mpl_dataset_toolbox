@@ -31,6 +31,20 @@ int BagNameParser(const std::string & file_name, std::string & prefix) {
         return 8;
       else if (topic_name == "gt")
         return 9;
+      else if (topic_name == "depth_reprojection")
+        return 10;
+      else if (topic_name == "left_event_depth")
+        return 11;
+      else if (topic_name == "right_event_depth")
+        return 12;
+      else if (topic_name == "left_camera_depth")
+        return 13;
+      else if (topic_name == "right_camera_depth")
+        return 14;
+      else if (topic_name == "left_camera_undistort")
+        return 15;
+      else if (topic_name == "right_camera_undistort")
+        return 16;
       else
         return 0;
     }
@@ -54,6 +68,13 @@ void PrintDirectoryInfo(std::map<std::string, std::vector<int>> & out_bags_info)
         case 7 : topic_list += "Kinect Depth Camera"; break;
         case 8 : topic_list += "LiDAR"; break;
         case 9 : topic_list += "Ground Truth Signal"; break;
+        case 10 : topic_list += "Full Depth Reprojection"; break;
+        case 11 : topic_list += "Left Event Camera (Depth)"; break;
+        case 12 : topic_list += "Right Event Camera (Depth)"; break;
+        case 13 : topic_list += "Left Regular Camera (Depth)"; break;
+        case 14 : topic_list += "Right Regular Camera (Depth)"; break;
+        case 15 : topic_list += "Left Regular Camera (Undistorted)"; break;
+        case 16 : topic_list += "Right Regular Camera (Undistorted)"; break;
       }
       if (topic_id != bag_it->second.back()) topic_list += " | ";
     }
@@ -128,6 +149,13 @@ int main(int argc, char ** argv) {
         case 7 : bags_in[idx].open(in_dir_path + bag_it->first + ".kinect_depth.bag", rosbag::bagmode::Read); break;
         case 8 : bags_in[idx].open(in_dir_path + bag_it->first + ".lidar.bag", rosbag::bagmode::Read); break;
         case 9 : bags_in[idx].open(in_dir_path + bag_it->first + ".gt.bag", rosbag::bagmode::Read); break;
+        case 10 : bags_in[idx].open(in_dir_path + bag_it->first + ".depth_reprojection.bag", rosbag::bagmode::Read); break;
+        case 11 : bags_in[idx].open(in_dir_path + bag_it->first + ".left_event_depth.bag", rosbag::bagmode::Read); break;
+        case 12 : bags_in[idx].open(in_dir_path + bag_it->first + ".right_event_depth.bag", rosbag::bagmode::Read); break;
+        case 13 : bags_in[idx].open(in_dir_path + bag_it->first + ".left_camera_depth.bag", rosbag::bagmode::Read); break;
+        case 14 : bags_in[idx].open(in_dir_path + bag_it->first + ".right_camera_depth.bag", rosbag::bagmode::Read); break;
+        case 15 : bags_in[idx].open(in_dir_path + bag_it->first + ".left_camera_undistort.bag", rosbag::bagmode::Read); break;
+        case 16 : bags_in[idx].open(in_dir_path + bag_it->first + ".right_camera_undistort.bag", rosbag::bagmode::Read); break;
       }
       bags_views[idx].addQuery(bags_in[idx]);
       msg_size += bags_views[idx].size();
