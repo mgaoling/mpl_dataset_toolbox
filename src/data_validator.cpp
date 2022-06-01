@@ -5,27 +5,39 @@
 
 // ------------------------------------------------------------------------- //
 
-bool receive_imu          = false;
-bool receive_event_left   = false;
-bool receive_event_right  = false;
-bool receive_camera_left  = false;
-bool receive_camera_right = false;
-bool receive_kinect_color = false;
-bool receive_kinect_depth = false;
-bool receive_lidar        = false;
-bool receive_gt           = false;
+bool receive_imu                    = false;
+bool receive_event_left             = false;
+bool receive_event_right            = false;
+bool receive_camera_left            = false;
+bool receive_camera_right           = false;
+bool receive_kinect_color           = false;
+bool receive_kinect_depth           = false;
+bool receive_lidar                  = false;
+bool receive_gt                     = false;
+bool receive_event_left_depth       = false;
+bool receive_event_right_depth      = false;
+bool receive_camera_left_depth      = false;
+bool receive_camera_right_depth     = false;
+bool receive_camera_left_undistort  = false;
+bool receive_camera_right_undistort = false;
 
-double   prev_imu_ts               = 0;
-uint64_t prev_event_left_ts        = 0;
-double   prev_event_left_array_ts  = 0;
-uint64_t prev_event_right_ts       = 0;
-double   prev_event_right_array_ts = 0;
-double   prev_camera_left_ts       = 0;
-double   prev_camera_right_ts      = 0;
-double   prev_kinect_color_ts      = 0;
-double   prev_kinect_depth_ts      = 0;
-double   prev_lidar_ts             = 0;
-double   prev_gt_ts                = 0;
+double   prev_imu_ts                    = 0;
+uint64_t prev_event_left_ts             = 0;
+double   prev_event_left_array_ts       = 0;
+uint64_t prev_event_right_ts            = 0;
+double   prev_event_right_array_ts      = 0;
+double   prev_camera_left_ts            = 0;
+double   prev_camera_right_ts           = 0;
+double   prev_kinect_color_ts           = 0;
+double   prev_kinect_depth_ts           = 0;
+double   prev_lidar_ts                  = 0;
+double   prev_gt_ts                     = 0;
+double   prev_event_left_depth_ts       = 0;
+double   prev_event_right_depth_ts      = 0;
+double   prev_camera_left_depth_ts      = 0;
+double   prev_camera_right_depth_ts     = 0;
+double   prev_camera_left_undistort_ts  = 0;
+double   prev_camera_right_undistort_ts = 0;
 
 std::vector<double> event_left_ts;
 std::vector<size_t> event_left_size;
@@ -187,6 +199,97 @@ void GroundTruthHandler(const PoseStamped::ConstPtr & pose_stamped_message) {
   }
 }
 
+void EventLeftDepthHandler(const Image::ConstPtr & image_message) {
+  if (!receive_event_left_depth) {
+    receive_event_left_depth = true;
+    prev_event_left_depth_ts = image_message->header.stamp.toSec();
+    ROS_INFO("%s", colorful_char::info("Receives reprojected depth data from the Left Event Camera!").c_str());
+  } else {
+    double event_left_depth_ts_diff = image_message->header.stamp.toSec() - prev_event_left_depth_ts;
+    if (event_left_depth_ts_diff < (1 - TS_DIFF_THLD) * KINECT_PERIOD || event_left_depth_ts_diff > (3 + TS_DIFF_THLD) * KINECT_PERIOD)
+      ROS_WARN("%s", colorful_char::warning("Left Event Camera's depth stream detects an unusual frequency!").c_str());
+    if (event_left_depth_ts_diff < 0)
+      ROS_WARN("%s", colorful_char::warning("Left Event Camera's depth stream detects a chronological error!").c_str());
+    prev_event_left_depth_ts = image_message->header.stamp.toSec();
+  }
+}
+
+void EventRightDepthHandler(const Image::ConstPtr & image_message) {
+  if (!receive_event_right_depth) {
+    receive_event_right_depth = true;
+    prev_event_right_depth_ts = image_message->header.stamp.toSec();
+    ROS_INFO("%s", colorful_char::info("Receives reprojected depth data from the Right Event Camera!").c_str());
+  } else {
+    double event_right_depth_ts_diff = image_message->header.stamp.toSec() - prev_event_right_depth_ts;
+    if (event_right_depth_ts_diff < (1 - TS_DIFF_THLD) * KINECT_PERIOD || event_right_depth_ts_diff > (3 + TS_DIFF_THLD) * KINECT_PERIOD)
+      ROS_WARN("%s", colorful_char::warning("Right Event Camera's depth stream detects an unusual frequency!").c_str());
+    if (event_right_depth_ts_diff < 0)
+      ROS_WARN("%s", colorful_char::warning("Right Event Camera's depth stream detects a chronological error!").c_str());
+    prev_event_right_depth_ts = image_message->header.stamp.toSec();
+  }
+}
+
+void CameraLeftDepthHandler(const Image::ConstPtr & image_message) {
+  if (!receive_camera_left_depth) {
+    receive_camera_left_depth = true;
+    prev_camera_left_depth_ts = image_message->header.stamp.toSec();
+    ROS_INFO("%s", colorful_char::info("Receives reprojected depth data from the Left Regular Camera!").c_str());
+  } else {
+    double camera_left_depth_ts_diff = image_message->header.stamp.toSec() - prev_camera_left_depth_ts;
+    if (camera_left_depth_ts_diff < (1 - TS_DIFF_THLD) * KINECT_PERIOD || camera_left_depth_ts_diff > (3 + TS_DIFF_THLD) * KINECT_PERIOD)
+      ROS_WARN("%s", colorful_char::warning("Left Regular Camera's depth stream detects an unusual frequency!").c_str());
+    if (camera_left_depth_ts_diff < 0)
+      ROS_WARN("%s", colorful_char::warning("Left Regular Camera's depth stream detects a chronological error!").c_str());
+    prev_camera_left_depth_ts = image_message->header.stamp.toSec();
+  }
+}
+
+void CameraRightDepthHandler(const Image::ConstPtr & image_message) {
+  if (!receive_camera_right_depth) {
+    receive_camera_right_depth = true;
+    prev_camera_right_depth_ts = image_message->header.stamp.toSec();
+    ROS_INFO("%s", colorful_char::info("Receives reprojected depth data from the Right Regular Camera!").c_str());
+  } else {
+    double camera_right_depth_ts_diff = image_message->header.stamp.toSec() - prev_camera_right_depth_ts;
+    if (camera_right_depth_ts_diff < (1 - TS_DIFF_THLD) * KINECT_PERIOD || camera_right_depth_ts_diff > (3 + TS_DIFF_THLD) * KINECT_PERIOD)
+      ROS_WARN("%s", colorful_char::warning("Right Regular Camera's depth stream detects an unusual frequency!").c_str());
+    if (camera_right_depth_ts_diff < 0)
+      ROS_WARN("%s", colorful_char::warning("Right Regular Camera's depth stream detects a chronological error!").c_str());
+    prev_camera_right_depth_ts = image_message->header.stamp.toSec();
+  }
+}
+
+void CameraLeftUndistotrtHandler(const Image::ConstPtr & image_message) {
+  if (!receive_camera_left_undistort) {
+    receive_camera_left_undistort = true;
+    prev_camera_left_undistort_ts = image_message->header.stamp.toSec();
+    ROS_INFO("%s", colorful_char::info("Receives undistorted data from the Left Regular Camera!").c_str());
+  } else {
+    double camera_left_undistort_ts_diff = image_message->header.stamp.toSec() - prev_camera_left_undistort_ts;
+    if (camera_left_undistort_ts_diff < (1 - TS_DIFF_THLD) * CAM_PERIOD || camera_left_undistort_ts_diff > (1 + TS_DIFF_THLD) * CAM_PERIOD)
+      ROS_WARN("%s", colorful_char::warning("Right Image stream detects an unusual frequency!").c_str());
+    if (camera_left_undistort_ts_diff < 0)
+      ROS_WARN("%s", colorful_char::warning("Left Regular Camera's depth stream detects a chronological error!").c_str());
+    prev_camera_left_undistort_ts = image_message->header.stamp.toSec();
+  }
+}
+
+void CameraRightUndistotrtHandler(const Image::ConstPtr & image_message) {
+  if (!receive_camera_right_undistort) {
+    receive_camera_right_undistort = true;
+    prev_camera_right_undistort_ts = image_message->header.stamp.toSec();
+    ROS_INFO("%s", colorful_char::info("Receives undistorted data from the Right Regular Camera!").c_str());
+  } else {
+    double camera_right_undistort_ts_diff = image_message->header.stamp.toSec() - prev_camera_right_undistort_ts;
+    if (camera_right_undistort_ts_diff < (1 - TS_DIFF_THLD) * CAM_PERIOD
+        || camera_right_undistort_ts_diff > (1 + TS_DIFF_THLD) * CAM_PERIOD)
+      ROS_WARN("%s", colorful_char::warning("Right Image stream detects an unusual frequency!").c_str());
+    if (camera_right_undistort_ts_diff < 0)
+      ROS_WARN("%s", colorful_char::warning("Right Regular Camera's depth stream detects a chronological error!").c_str());
+    prev_camera_right_undistort_ts = image_message->header.stamp.toSec();
+  }
+}
+
 // ------------------------------------------------------------------------- //
 
 int main(int argc, char ** argv) {
@@ -194,7 +297,8 @@ int main(int argc, char ** argv) {
   ros::NodeHandle nh;
 
   std::string imu_topic, event_left_topic, event_right_topic, camera_left_topic, camera_right_topic, kinect_color_topic, kinect_depth_topic,
-    lidar_topic, gt_topic;
+    lidar_topic, gt_topic, event_left_depth_topic, event_right_depth_topic, camera_left_depth_topic, camera_right_depth_topic,
+    camera_left_undistort_topic, camera_right_undistort_topic;
   ros::param::get("/imu_topic", imu_topic);
   ros::param::get("/event_left_topic", event_left_topic);
   ros::param::get("/event_right_topic", event_right_topic);
@@ -204,16 +308,28 @@ int main(int argc, char ** argv) {
   ros::param::get("/kinect_depth_topic", kinect_depth_topic);
   ros::param::get("/lidar_topic", lidar_topic);
   ros::param::get("/ground_truth_topic", gt_topic);
+  ros::param::get("/event_left_depth_topic", event_left_depth_topic);
+  ros::param::get("/event_right_depth_topic", event_right_depth_topic);
+  ros::param::get("/camera_left_depth_topic", camera_left_depth_topic);
+  ros::param::get("/camera_right_depth_topic", camera_right_depth_topic);
+  ros::param::get("/camera_left_undistort_topic", camera_left_undistort_topic);
+  ros::param::get("/camera_right_undistort_topic", camera_right_undistort_topic);
 
-  ros::Subscriber sub_imu          = nh.subscribe<IMU>(imu_topic, 1000, &ImuHandler);
-  ros::Subscriber sub_event_left   = nh.subscribe<EventArray>(event_left_topic, 100000, &EventLeftHandler);
-  ros::Subscriber sub_event_right  = nh.subscribe<EventArray>(event_right_topic, 100000, &EventRightHandler);
-  ros::Subscriber sub_camera_left  = nh.subscribe<Image>(camera_left_topic, 1000, &CameraLeftHandler);
-  ros::Subscriber sub_camera_right = nh.subscribe<Image>(camera_right_topic, 1000, &CameraRightHandler);
-  ros::Subscriber sub_kinect_color = nh.subscribe<Image>(kinect_color_topic, 1000, &KinectColorHandler);
-  ros::Subscriber sub_kinect_depth = nh.subscribe<Image>(kinect_depth_topic, 1000, &KinectDepthHandler);
-  ros::Subscriber sub_lidar        = nh.subscribe<PointCloud>(lidar_topic, 1000, &LidarHandler);
-  ros::Subscriber sub_gt           = nh.subscribe<PoseStamped>(gt_topic, 1000, &GroundTruthHandler);
+  ros::Subscriber sub_imu                    = nh.subscribe<IMU>(imu_topic, 1000, &ImuHandler);
+  ros::Subscriber sub_event_left             = nh.subscribe<EventArray>(event_left_topic, 100000, &EventLeftHandler);
+  ros::Subscriber sub_event_right            = nh.subscribe<EventArray>(event_right_topic, 100000, &EventRightHandler);
+  ros::Subscriber sub_camera_left            = nh.subscribe<Image>(camera_left_topic, 1000, &CameraLeftHandler);
+  ros::Subscriber sub_camera_right           = nh.subscribe<Image>(camera_right_topic, 1000, &CameraRightHandler);
+  ros::Subscriber sub_kinect_color           = nh.subscribe<Image>(kinect_color_topic, 1000, &KinectColorHandler);
+  ros::Subscriber sub_kinect_depth           = nh.subscribe<Image>(kinect_depth_topic, 1000, &KinectDepthHandler);
+  ros::Subscriber sub_lidar                  = nh.subscribe<PointCloud>(lidar_topic, 1000, &LidarHandler);
+  ros::Subscriber sub_gt                     = nh.subscribe<PoseStamped>(gt_topic, 1000, &GroundTruthHandler);
+  ros::Subscriber sub_event_left_depth       = nh.subscribe<Image>(event_left_depth_topic, 1000, &EventLeftDepthHandler);
+  ros::Subscriber sub_event_right_depth      = nh.subscribe<Image>(event_right_depth_topic, 1000, &EventRightDepthHandler);
+  ros::Subscriber sub_camera_left_depth      = nh.subscribe<Image>(camera_left_depth_topic, 1000, &CameraLeftDepthHandler);
+  ros::Subscriber sub_camera_right_depth     = nh.subscribe<Image>(camera_right_depth_topic, 1000, &CameraRightDepthHandler);
+  ros::Subscriber sub_camera_left_undistort  = nh.subscribe<Image>(camera_left_undistort_topic, 1000, &CameraLeftUndistotrtHandler);
+  ros::Subscriber sub_camera_right_undistort = nh.subscribe<Image>(camera_right_undistort_topic, 1000, &CameraRightUndistotrtHandler);
   ros::spin();
 
   // By cutting off the first and last X seconds, calculate the Mean Event Rate for each event streaem.
