@@ -169,12 +169,12 @@ int main(int argc, char ** argv) {
       int    earliest_idx;
       double earliest_ts = DBL_MAX;
       for (size_t idx = 0; idx < bag_it->second.size(); ++idx) {
-        if (are_bags_valid[idx] && earliest_ts > (*bags_msg_ptr[idx]).getTime().toSec()) {
+        if (are_bags_valid[idx] && earliest_ts > bags_msg_ptr[idx]->getTime().toSec()) {
           earliest_idx = idx;
-          earliest_ts  = (*bags_msg_ptr[idx]).getTime().toSec();
+          earliest_ts  = bags_msg_ptr[idx]->getTime().toSec();
         }
       }
-      bag_out.write((*bags_msg_ptr[earliest_idx]).getTopic(), (*bags_msg_ptr[earliest_idx]).getTime(), *bags_msg_ptr[earliest_idx]);
+      bag_out.write(bags_msg_ptr[earliest_idx]->getTopic(), bags_msg_ptr[earliest_idx]->getTime(), *bags_msg_ptr[earliest_idx]);
       ++bags_msg_ptr[earliest_idx];
       if (bags_msg_ptr[earliest_idx] == bags_views[earliest_idx].end()) {
         are_bags_valid[earliest_idx] = false;
